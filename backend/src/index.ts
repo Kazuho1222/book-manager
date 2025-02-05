@@ -1,5 +1,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 
 const app = new Hono()
 
@@ -14,6 +15,18 @@ const bookManager: BookManager[] = [
   { id: 2, name: "TypeScript入門", status: "貸出中" },
   { id: 3, name: "Next.js入門", status: "返却済" },
 ]
+
+app.use(
+  "/*",
+  cors({
+    origin: ["http://localhost:5173"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 3600,
+    credentials: true,
+  })
+)
 
 app.get('/books', async (c) => {
   const query = c.req.query()
